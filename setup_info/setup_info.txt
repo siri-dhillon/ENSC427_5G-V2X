@@ -1,0 +1,13 @@
+# This is a text file with information on all the dependencies to be installed: 
+# You can use the script given with this text file for intial set up and then 
+# install additional features as needed
+# or use the following website to download and install the pre-requisites 
+# manually one-by-one
+
+# Installing dependencies for ns-3: 
+# Script:  sudo ./dependencies.sh 
+# Website: https://www.nsnam.org/wiki/Installation
+
+# Building 
+./waf clean 
+./waf configure --build-profile=optimized --enable-examples --enable-tests --enable-mpi --enable-des-metrics --with-brite=WITH_BRITE --with-openflow=WITH_OPENFLOW --with-pybindgen=WITH_PYBINDGEN --with-nsclick=WITH_NSCLICK --enable-sudo
