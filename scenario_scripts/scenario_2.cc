@@ -84,6 +84,7 @@ static void Rx (Ptr<OutputStreamWrapper> stream, Ptr<const Packet> p)
 int main (int argc, char *argv[])
 {
   
+  std::string animFile = "animation.xml" ;  // Name of file for animation output
 
   // system parameters
   Time endTime = Seconds (10.0);
@@ -170,12 +171,6 @@ int main (int argc, char *argv[])
   helper->PairDevices(devs);
 
   // Set the routing table
-  /*
-  Ipv4StaticRoutingHelper ipv4RoutingHelper;
-  Ptr<Ipv4StaticRouting> staticRouting = ipv4RoutingHelper.GetStaticRouting (n.Get (0)->GetObject<Ipv4> ());
-  staticRouting->SetDefaultRoute (n.Get (1)->GetObject<Ipv4> ()->GetAddress (1, 0).GetLocal () , 2 );*/
-  
-  // Ipv4StaticRoutingHelper ipv4RoutingHelper;
   Ipv4StaticRoutingHelper ipv4RoutingHelper;  
   
   Ptr<Ipv4StaticRouting> staticRouting = ipv4RoutingHelper.GetStaticRouting (n.Get (0)->GetObject<Ipv4> ());
@@ -245,27 +240,23 @@ int main (int argc, char *argv[])
    flowMonitor = flowHelper.InstallAll();
 
   Simulator::Stop (Seconds(18.0));
-  /*
-      NETANIM notes 
-         1. Ptr<Node> n = nodecontainer.Get (1);
-         2. AnimationInterface anim ("anim.xml");
-         2. anim.SetConstantPosition (n, 100, 200);
-  
-  */
-  AnimationInterface anim ("animation.xml");
+
+  AnimationInterface anim (animFile);
   anim.EnablePacketMetadata (true);
   anim.SetMobilityPollInterval (Seconds (1));
   anim.EnableIpv4L3ProtocolCounters (Seconds (0), Seconds (10)); // Optional
+  
   Simulator::Run ();
   
-  //Flow monitor
-  flowMonitor->SerializeToXmlFile("flowmonitor.xml", true, true);
+  std::cout << "Animation Trace file created:" << animFile.c_str ()<< std::endl;
+  
+  flowMonitor->SerializeToXmlFile("flowmonitor.xml", true, true); // Flow monitor
   
   Simulator::Destroy ();
 
   std::cout << "----------- Statistics: Scenario 1-----------" << std::endl;
   std::cout << "Antenna Height:\t\t" << antennaHeight << " m" << std::endl;
-  std::cout << "Bandwidth:\t\t\t" << bandwidth << " Hz" << std::endl;
+  std::cout << "Bandwidth:\t\t" << bandwidth << " Hz" << std::endl;
   std::cout << "Packets size:\t\t" << packetSize << " Bytes" << std::endl;
   std::cout << "Packets received:\t" << g_rxPackets << std::endl;
   std::cout << "Average Throughput:\t" << (double(g_rxPackets)*(double(packetSize)*8)/double( g_lastReceived.GetSeconds() - g_firstReceived.GetSeconds()))/1e6 << " Mbps" << std::endl;
