@@ -68,15 +68,20 @@ static void Rx (Ptr<OutputStreamWrapper> stream, Ptr<const Packet> p)
 
  p->PeekHeader(header);
 
- *stream->GetStream () << Simulator::Now ().GetSeconds () << "\t" << p->GetSize() << "\t" << header.GetSeq() << "\t" << header.GetTs().GetSeconds() << std::endl;
+ //interrupting signal 
+ if (Simulator::Now() < Seconds(5) && Simulator::Now() > Seconds(4.5)){
+        *stream->GetStream () << Simulator::Now ().GetSeconds () << "\t" << 0 << "\t" << 0 << "\t" << 0 << std::endl;
+ }
+ else {
+       *stream->GetStream () << Simulator::Now ().GetSeconds () << "\t" << p->GetSize() << "\t" << header.GetSeq() << "\t" << header.GetTs().GetSeconds() << std::endl; 
+ }
+ //*stream->GetStream () << Simulator::Now ().GetSeconds () << "\t" << p->GetSize() << "\t" << header.GetSeq() << "\t" << header.GetTs().GetSeconds() << std::endl;
 
- if (g_rxPackets > 1)
- {
+ if (g_rxPackets > 1){
 
    g_lastReceived = Simulator::Now();
  }
- else
- {
+ else{
    g_firstReceived = Simulator::Now();
  }
 }
